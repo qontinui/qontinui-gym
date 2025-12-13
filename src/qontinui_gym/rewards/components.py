@@ -15,7 +15,7 @@ import numpy as np
 from qontinui_gym.rewards.base import BaseRewardComponent, StepInfo
 
 if TYPE_CHECKING:
-    from qontinui_gym.config.loader import QontinuiConfig
+    pass
 
 
 # =============================================================================

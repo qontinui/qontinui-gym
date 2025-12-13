@@ -212,8 +212,12 @@ def evaluate_agent(model_path: str, config_path: str, num_episodes: int = 10):
         print(f"Episode {ep + 1}: reward={total_reward:.2f}, steps={steps}")
 
     print(f"\nResults over {num_episodes} episodes:")
-    print(f"  Mean reward: {np.mean(episode_rewards):.2f} +/- {np.std(episode_rewards):.2f}")
-    print(f"  Mean length: {np.mean(episode_lengths):.1f} +/- {np.std(episode_lengths):.1f}")
+    mean_reward = np.mean(episode_rewards)
+    std_reward = np.std(episode_rewards)
+    mean_length = np.mean(episode_lengths)
+    std_length = np.std(episode_lengths)
+    print(f"  Mean reward: {mean_reward:.2f} +/- {std_reward:.2f}")
+    print(f"  Mean length: {mean_length:.1f} +/- {std_length:.1f}")
 
     env.close()
 

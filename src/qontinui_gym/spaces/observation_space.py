@@ -247,7 +247,9 @@ def build_observation(
         history.fill(num_workflows)
         if action_history:
             # Fill from the end with most recent actions
-            for i, action in enumerate(action_history[-obs_config.action_history_length :]):
+            for i, action in enumerate(
+                action_history[-obs_config.action_history_length :]
+            ):
                 history[i] = action
         observation["action_history"] = history
 
@@ -340,12 +342,14 @@ def get_observation_metadata(
     return {
         "include_screenshot": obs_config.include_screenshot,
         "screenshot_shape": (
-            obs_config.screenshot_height,
-            obs_config.screenshot_width,
-            1 if obs_config.screenshot_grayscale else 3,
-        )
-        if obs_config.include_screenshot
-        else None,
+            (
+                obs_config.screenshot_height,
+                obs_config.screenshot_width,
+                1 if obs_config.screenshot_grayscale else 3,
+            )
+            if obs_config.include_screenshot
+            else None
+        ),
         "include_state_info": obs_config.include_state_info,
         "num_states": len(config.states),
         "state_names": [s.name for s in config.states],

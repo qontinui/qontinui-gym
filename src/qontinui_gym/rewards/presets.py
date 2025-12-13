@@ -12,10 +12,13 @@ from qontinui_gym.rewards.base import RewardComponent
 from qontinui_gym.rewards.components import (
     GoalConditionedReward,
     StateReachReward,
-    StateVisitCountReward,
     StepPenalty,
 )
-from qontinui_gym.rewards.composers import ComposedReward, CompositionMode, RewardBuilder
+from qontinui_gym.rewards.composers import (
+    ComposedReward,
+    CompositionMode,
+    RewardBuilder,
+)
 from qontinui_gym.rewards.curriculum import (
     CurriculumReward,
     LinearCurriculum,

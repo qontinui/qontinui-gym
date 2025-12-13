@@ -10,7 +10,8 @@ exploration without relying on external rewards:
 from __future__ import annotations
 
 from collections import deque
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -220,9 +221,7 @@ class RandomNetworkDistillationReward(BaseRewardComponent):
 
         # Update predictor (move toward target)
         gradient = predictor_output - target_output
-        self._predictor_weights -= (
-            self.learning_rate * np.outer(gradient, features)
-        )
+        self._predictor_weights -= self.learning_rate * np.outer(gradient, features)
 
         return self.scale * error
 
@@ -269,7 +268,9 @@ class StateEntropyReward(BaseRewardComponent):
 
         # Probability of current state before this visit
         count = self._visit_counts[state_key]
-        p_before = (count - 1) / (self._total_visits - 1) if self._total_visits > 1 else 0
+        p_before = (
+            (count - 1) / (self._total_visits - 1) if self._total_visits > 1 else 0
+        )
         p_after = count / self._total_visits
 
         # Information gain from this visit

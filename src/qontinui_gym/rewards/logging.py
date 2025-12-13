@@ -236,9 +236,11 @@ class RewardLogger:
             "max_return": float(np.max(returns)),
             "min_return": float(np.min(returns)),
             "success_rate": sum(successes) / len(successes),
-            "return_trend": float(np.polyfit(range(len(returns)), returns, 1)[0])
-            if len(returns) > 1
-            else 0.0,
+            "return_trend": (
+                float(np.polyfit(range(len(returns)), returns, 1)[0])
+                if len(returns) > 1
+                else 0.0
+            ),
             "component_totals": dict(self._component_totals),
         }
 

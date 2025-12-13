@@ -40,6 +40,6 @@ repos:
     hooks:
       - id: block-claude-attribution
         name: Block Claude Attribution
-        entry: .pre-commit-hooks/block-claude-attribution.sh
-        language: script
+        entry: python .pre-commit-hooks/block_claude_attribution.py
+        language: system
         stages: [commit-msg]

@@ -157,9 +157,7 @@ class PerformanceBasedCurriculum(CurriculumSchedule):
             success_rate = successes / len(recent)
 
             if success_rate >= self.advancement_threshold:
-                self._current_level = min(
-                    self._current_level + 1, self.num_levels - 1
-                )
+                self._current_level = min(self._current_level + 1, self.num_levels - 1)
                 # Clear history when advancing
                 self._episode_returns = []
 
@@ -249,9 +247,7 @@ class CurriculumReward(BaseRewardComponent):
 
     def get_current_level(self) -> int:
         """Get the current curriculum level."""
-        return self.schedule.get_current_level(
-            self._current_episode, self._total_steps
-        )
+        return self.schedule.get_current_level(self._current_episode, self._total_steps)
 
     def get_statistics(self) -> dict[str, Any]:
         stats = super().get_statistics()

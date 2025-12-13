@@ -262,7 +262,11 @@ def decode_action(
     # Hybrid mode
     action_types = _get_action_types(config, action_config)
     action_type_idx = action.get("action_type", 0)
-    action_type = action_types[action_type_idx] if action_type_idx < len(action_types) else "workflow"
+    action_type = (
+        action_types[action_type_idx]
+        if action_type_idx < len(action_types)
+        else "workflow"
+    )
 
     workflows = _filter_workflows(config, action_config)
     params: dict[str, Any] = {}

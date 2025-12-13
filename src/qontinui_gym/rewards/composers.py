@@ -7,13 +7,14 @@ This module provides tools for combining multiple reward components:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from qontinui_gym.rewards.base import BaseRewardComponent, RewardComponent, StepInfo
+from qontinui_gym.rewards.base import RewardComponent, StepInfo
 from qontinui_gym.rewards.components import (
     ActionSuccessReward,
     InvalidActionPenalty,

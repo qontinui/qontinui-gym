@@ -13,7 +13,6 @@ from typing import Any
 import gymnasium as gym
 import numpy as np
 import numpy.typing as npt
-from gymnasium import spaces
 from gymnasium.core import RenderFrame
 
 from qontinui_gym.client.runner_client import RunnerClient

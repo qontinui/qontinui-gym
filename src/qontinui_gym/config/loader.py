@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -267,23 +267,23 @@ def compute_state_distances(
         return _compute_distances_bfs(config, goal_states)
 
     # Build directed graph
-    G = nx.DiGraph()
+    graph: nx.DiGraph[str] = nx.DiGraph()
     for s in config.states:
-        G.add_node(s.id)
+        graph.add_node(s.id)
 
     for t in config.transitions:
-        G.add_edge(t.from_state, t.to_state)
+        graph.add_edge(t.from_state, t.to_state)
 
     # Compute distances to goals (reverse graph for "distance TO goal")
     distances: dict[str, int] = {}
-    G_rev = G.reverse()
+    graph_rev = graph.reverse()
 
     for goal_id in goal_states:
-        if goal_id not in G_rev:
+        if goal_id not in graph_rev:
             continue
 
         try:
-            lengths = dict(nx.single_source_shortest_path_length(G_rev, goal_id))
+            lengths = dict(nx.single_source_shortest_path_length(graph_rev, goal_id))
             for state_id, dist in lengths.items():
                 if state_id not in distances:
                     distances[state_id] = dist

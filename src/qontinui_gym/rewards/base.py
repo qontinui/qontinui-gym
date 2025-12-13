@@ -76,7 +76,9 @@ class StepInfo:
     # Action information
     action_type: str = "workflow"
     action_params: dict[str, Any] = field(default_factory=dict)
-    action_result: ActionResult = field(default_factory=lambda: ActionResult(success=True))
+    action_result: ActionResult = field(
+        default_factory=lambda: ActionResult(success=True)
+    )
 
     # Visual information (optional)
     screenshot_before: npt.NDArray[np.uint8] | None = None
@@ -254,9 +256,7 @@ class BaseRewardComponent(ABC):
             "call_count": self._call_count,
             "total_reward": self._total_reward,
             "average_reward": (
-                self._total_reward / self._call_count
-                if self._call_count > 0
-                else 0.0
+                self._total_reward / self._call_count if self._call_count > 0 else 0.0
             ),
         }
 
