@@ -70,8 +70,8 @@ def train_ppo(
     """
     try:
         from stable_baselines3 import PPO  # type: ignore[import-not-found]
-        from stable_baselines3.common.vec_env import (
-            DummyVecEnv,  # type: ignore[import-not-found]
+        from stable_baselines3.common.vec_env import (  # type: ignore[import-not-found]
+            DummyVecEnv,
         )
     except ImportError:
         print("stable-baselines3 not installed. Run: pip install stable-baselines3")
