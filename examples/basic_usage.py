@@ -11,7 +11,7 @@ Requirements:
 from qontinui_gym import QontinuiEnv
 
 
-def main():
+def main() -> None:
     # Create environment
     # Replace with your actual config path
     config_path = "path/to/your/automation-config.json"

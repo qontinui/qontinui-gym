@@ -58,7 +58,9 @@ def create_env(config_path: str, goal_states: list[str] | None = None) -> Any:
     return env
 
 
-def train_ppo(config_path: str, goal_states: list[str], total_timesteps: int = 10000):
+def train_ppo(
+    config_path: str, goal_states: list[str], total_timesteps: int = 10000
+) -> Any:
     """Train a PPO agent on qontinui-gym.
 
     Args:
@@ -67,8 +69,10 @@ def train_ppo(config_path: str, goal_states: list[str], total_timesteps: int = 1
         total_timesteps: Training steps
     """
     try:
-        from stable_baselines3 import PPO
-        from stable_baselines3.common.vec_env import DummyVecEnv
+        from stable_baselines3 import PPO  # type: ignore[import-not-found]
+        from stable_baselines3.common.vec_env import (
+            DummyVecEnv,  # type: ignore[import-not-found]
+        )
     except ImportError:
         print("stable-baselines3 not installed. Run: pip install stable-baselines3")
         return
@@ -100,7 +104,9 @@ def train_ppo(config_path: str, goal_states: list[str], total_timesteps: int = 1
     return model
 
 
-def train_dqn(config_path: str, goal_states: list[str], total_timesteps: int = 10000):
+def train_dqn(
+    config_path: str, goal_states: list[str], total_timesteps: int = 10000
+) -> Any:
     """Train a DQN agent on qontinui-gym.
 
     Note: DQN requires discrete action space. Use ActionSpaceConfig.discrete()
@@ -124,7 +130,7 @@ def train_dqn(config_path: str, goal_states: list[str], total_timesteps: int = 1
     from qontinui_gym.spaces import ActionSpaceConfig
 
     # Create environment with discrete action space for DQN
-    def make_env():
+    def make_env() -> QontinuiRewardWrapper:
         env = QontinuiEnv(
             config_path=config_path,
             max_episode_steps=100,
@@ -171,7 +177,7 @@ def train_dqn(config_path: str, goal_states: list[str], total_timesteps: int = 1
     return model
 
 
-def evaluate_agent(model_path: str, config_path: str, num_episodes: int = 10):
+def evaluate_agent(model_path: str, config_path: str, num_episodes: int = 10) -> None:
     """Evaluate a trained agent.
 
     Args:

@@ -17,7 +17,7 @@ from qontinui_gym.rewards import (
 from qontinui_gym.rewards.presets import goal_conditioned_preset
 
 
-def example_builder_api():
+def example_builder_api() -> None:
     """Example using the RewardBuilder fluent API."""
     print("=== RewardBuilder API ===\n")
 
@@ -52,7 +52,7 @@ def example_builder_api():
     for step in range(100):
         action = env.action_space.sample()
         obs, reward, terminated, truncated, info = env.step(action)
-        total_reward += reward
+        total_reward += float(reward)
 
         if step % 10 == 0:
             print(f"Step {step}: reward={reward:.4f}, total={total_reward:.4f}")
@@ -66,7 +66,7 @@ def example_builder_api():
     env.close()
 
 
-def example_with_shaping():
+def example_with_shaping() -> None:
     """Example with potential-based reward shaping."""
     print("\n=== Reward Shaping ===\n")
 
@@ -103,7 +103,7 @@ def example_with_shaping():
     env.close()
 
 
-def example_manual_composition():
+def example_manual_composition() -> None:
     """Example manually composing reward components."""
     print("\n=== Manual Composition ===\n")
 
@@ -148,7 +148,7 @@ def example_manual_composition():
     env.close()
 
 
-def example_preset():
+def example_preset() -> None:
     """Example using preset reward configurations."""
     print("\n=== Preset Rewards ===\n")
 
@@ -176,7 +176,7 @@ def example_preset():
     for step in range(50):
         action = env.action_space.sample()
         obs, reward, terminated, truncated, info = env.step(action)
-        total += reward
+        total += float(reward)
         if terminated or truncated:
             break
 

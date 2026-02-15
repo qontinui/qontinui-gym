@@ -7,7 +7,7 @@ This module provides tools for combining multiple reward components:
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import Enum
 from typing import TYPE_CHECKING, Any
@@ -83,7 +83,7 @@ class ComposedReward:
 
     def __init__(
         self,
-        components: list[RewardComponent],
+        components: Sequence[RewardComponent],
         mode: CompositionMode = CompositionMode.SUM,
         custom_combiner: Callable[[list[float]], float] | None = None,
         clip_range: tuple[float, float] | None = None,
@@ -98,7 +98,7 @@ class ComposedReward:
             clip_range: Optional (min, max) to clip final reward
             normalize: Whether to normalize rewards using running stats
         """
-        self.components = components
+        self.components = list(components)
         self.mode = mode
         self.custom_combiner = custom_combiner
         self.clip_range = clip_range
