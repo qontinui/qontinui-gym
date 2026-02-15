@@ -1,6 +1,7 @@
 """Tests for qontinui_gym.rewards module."""
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 
 from qontinui_gym.rewards.base import (
@@ -341,8 +342,8 @@ class TestScreenChangeReward:
 
     def test_screen_changed(
         self,
-        sample_screenshot: np.ndarray,
-        sample_screenshot_with_content: np.ndarray,
+        sample_screenshot: npt.NDArray[np.uint8],
+        sample_screenshot_with_content: npt.NDArray[np.uint8],
     ) -> None:
         """Test reward when screen changes."""
         component = ScreenChangeReward(
@@ -359,7 +360,7 @@ class TestScreenChangeReward:
 
     def test_screen_unchanged(
         self,
-        sample_screenshot: np.ndarray,
+        sample_screenshot: npt.NDArray[np.uint8],
     ) -> None:
         """Test no reward when screen doesn't change."""
         component = ScreenChangeReward(

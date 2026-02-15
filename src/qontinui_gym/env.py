@@ -33,7 +33,7 @@ from qontinui_gym.spaces.observation_space import (
 logger = logging.getLogger(__name__)
 
 
-class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):
+class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):  # type: ignore[misc]
     """Gymnasium environment for visual GUI automation with Qontinui.
 
     This environment connects to a running qontinui-runner instance
@@ -295,12 +295,12 @@ class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):
         """
         if self.render_mode == "rgb_array":
             if self._last_screenshot is not None:
-                return self._last_screenshot  # type: ignore[return-value]
-            return self.client.take_screenshot(monitor=self.monitor)  # type: ignore[return-value]
+                return self._last_screenshot
+            return self.client.take_screenshot(monitor=self.monitor)
         elif self.render_mode == "human":
             # For human mode, could display in a window
             # For now, just return the screenshot
-            return self._last_screenshot  # type: ignore[return-value]
+            return self._last_screenshot
         return None
 
     def close(self) -> None:

@@ -69,3 +69,15 @@ python_version = "3.10"
 strict = true
 warn_return_any = true
 warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = ["gymnasium.*", "gymnasium"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "networkx"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["requests", "requests.exceptions"]
+ignore_missing_imports = true

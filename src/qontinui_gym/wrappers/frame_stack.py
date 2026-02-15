@@ -15,7 +15,7 @@ import numpy.typing as npt
 from gymnasium import spaces
 
 
-class FrameStackWrapper(gym.Wrapper):  # type: ignore[type-arg]
+class FrameStackWrapper(gym.Wrapper):  # type: ignore[misc]
     """Stack multiple screenshot frames for temporal information.
 
     Useful for detecting animations, transitions, and temporal patterns.
@@ -28,7 +28,7 @@ class FrameStackWrapper(gym.Wrapper):  # type: ignore[type-arg]
         # observation["screenshot"] shape: (4, H, W, C)
     """
 
-    def __init__(self, env: gym.Env, num_frames: int = 4):  # type: ignore[type-arg]
+    def __init__(self, env: gym.Env, num_frames: int = 4):
         """Initialize frame stack wrapper.
 
         Args:

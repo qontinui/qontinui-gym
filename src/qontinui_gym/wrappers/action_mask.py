@@ -14,7 +14,7 @@ import numpy.typing as npt
 from gymnasium import spaces
 
 
-class ActionMaskWrapper(gym.Wrapper):  # type: ignore[type-arg]
+class ActionMaskWrapper(gym.Wrapper):  # type: ignore[misc]
     """Mask invalid actions based on current state.
 
     Uses state machine transitions to determine which workflows
@@ -32,7 +32,7 @@ class ActionMaskWrapper(gym.Wrapper):  # type: ignore[type-arg]
 
     def __init__(
         self,
-        env: gym.Env,  # type: ignore[type-arg]
+        env: gym.Env,
         default_all_valid: bool = True,
     ):
         """Initialize action mask wrapper.
@@ -133,7 +133,7 @@ class ActionMaskWrapper(gym.Wrapper):  # type: ignore[type-arg]
         return self._current_valid_actions
 
 
-class TerminateOnInvalidWrapper(gym.Wrapper):  # type: ignore[type-arg]
+class TerminateOnInvalidWrapper(gym.Wrapper):  # type: ignore[misc]
     """Terminate episode on invalid action.
 
     Useful for training agents to only take valid actions.
@@ -144,7 +144,7 @@ class TerminateOnInvalidWrapper(gym.Wrapper):  # type: ignore[type-arg]
 
     def __init__(
         self,
-        env: gym.Env,  # type: ignore[type-arg]
+        env: gym.Env,
         penalty: float = -1.0,
     ):
         """Initialize termination wrapper.

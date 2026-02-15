@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from qontinui_gym.rewards.composers import ComposedReward
 
 
-class QontinuiRewardWrapper(Wrapper):  # type: ignore[type-arg]
+class QontinuiRewardWrapper(Wrapper):  # type: ignore[misc]
     """Gymnasium wrapper that applies a qontinui-gym reward function.
 
     This wrapper intercepts the reward from the base environment
@@ -40,7 +40,7 @@ class QontinuiRewardWrapper(Wrapper):  # type: ignore[type-arg]
 
     def __init__(
         self,
-        env: gym.Env,  # type: ignore[type-arg]
+        env: gym.Env,
         reward_function: ComposedReward,
         add_original_reward: bool = True,
     ):
@@ -157,14 +157,14 @@ class QontinuiRewardWrapper(Wrapper):  # type: ignore[type-arg]
         )
 
 
-class RewardScaleWrapper(Wrapper):  # type: ignore[type-arg]
+class RewardScaleWrapper(Wrapper):  # type: ignore[misc]
     """Simple wrapper to scale rewards by a constant factor.
 
     Example:
         env = RewardScaleWrapper(env, scale=0.01)
     """
 
-    def __init__(self, env: gym.Env, scale: float = 1.0):  # type: ignore[type-arg]
+    def __init__(self, env: gym.Env, scale: float = 1.0):
         """Initialize reward scale wrapper.
 
         Args:
@@ -181,7 +181,7 @@ class RewardScaleWrapper(Wrapper):  # type: ignore[type-arg]
         return obs, float(reward) * self.scale, terminated, truncated, info
 
 
-class RewardClipWrapper(Wrapper):  # type: ignore[type-arg]
+class RewardClipWrapper(Wrapper):  # type: ignore[misc]
     """Wrapper to clip rewards to a range.
 
     Example:
@@ -190,7 +190,7 @@ class RewardClipWrapper(Wrapper):  # type: ignore[type-arg]
 
     def __init__(
         self,
-        env: gym.Env,  # type: ignore[type-arg]
+        env: gym.Env,
         min_reward: float = -float("inf"),
         max_reward: float = float("inf"),
     ):

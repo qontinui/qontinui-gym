@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import numpy.typing as npt
 import pytest
 
 
@@ -116,13 +117,13 @@ def sample_config_file(sample_config_dict: dict[str, Any]) -> Path:
 
 
 @pytest.fixture
-def sample_screenshot() -> np.ndarray:
+def sample_screenshot() -> npt.NDArray[np.uint8]:
     """Create a sample screenshot array."""
     return np.zeros((480, 640, 3), dtype=np.uint8)
 
 
 @pytest.fixture
-def sample_screenshot_with_content() -> np.ndarray:
+def sample_screenshot_with_content() -> npt.NDArray[np.uint8]:
     """Create a sample screenshot with some content."""
     img = np.zeros((480, 640, 3), dtype=np.uint8)
     # Add some variation

@@ -133,7 +133,7 @@ def _filter_workflows(
     return workflows
 
 
-def _build_discrete_space(workflows: list[Any]) -> spaces.Discrete:  # type: ignore[type-arg]
+def _build_discrete_space(workflows: list[Any]) -> spaces.Discrete:
     """Build simple discrete action space."""
     num_actions = max(1, len(workflows))
     return spaces.Discrete(num_actions)

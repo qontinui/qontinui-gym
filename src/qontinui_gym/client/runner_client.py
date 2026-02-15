@@ -144,7 +144,7 @@ class RunnerClient:
                 f"{self.base_url}/health",
                 timeout=self.timeout,
             )
-            return resp.status_code == 200
+            return bool(resp.status_code == 200)
         except (ConnectionError, Timeout):
             return False
 

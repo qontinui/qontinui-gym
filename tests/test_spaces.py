@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import numpy as np
+import numpy.typing as npt
 from gymnasium import spaces
 
 from qontinui_gym.config.loader import load_qontinui_config
@@ -259,7 +260,7 @@ class TestBuildObservation:
     def test_build_observation_with_screenshot(
         self,
         sample_config_file: Path,
-        sample_screenshot: np.ndarray,
+        sample_screenshot: npt.NDArray[np.uint8],
     ) -> None:
         """Test building observation with screenshot."""
         config = load_qontinui_config(sample_config_file)
