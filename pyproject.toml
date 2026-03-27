@@ -38,7 +38,6 @@ all = ["opencv-python-headless", "stable-baselines3"]
 pytest = "^8.3"
 pytest-cov = "^6.0"
 black = "^24.10"
-isort = "^7.0"
 ruff = "^0.14"
 mypy = "^1.14"
 types-requests = "^2.32"
@@ -52,10 +51,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.black]
 line-length = 88
 target-version = ["py310"]
-
-[tool.isort]
-profile = "black"
-line_length = 88
 
 [tool.ruff]
 line-length = 88
