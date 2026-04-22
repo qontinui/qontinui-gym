@@ -37,7 +37,6 @@ all = ["opencv-python-headless", "stable-baselines3"]
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3"
 pytest-cov = "^6.0"
-black = "^24.10"
 ruff = "^0.14"
 mypy = "^1.14"
 types-requests = "^2.32"
