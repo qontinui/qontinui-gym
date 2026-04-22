@@ -48,10 +48,6 @@ pre-commit = "^4.4"
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
-line-length = 88
-target-version = ["py310"]
-
 [tool.ruff]
 line-length = 88
 target-version = "py310"
