@@ -69,8 +69,8 @@ def train_ppo(
         total_timesteps: Training steps
     """
     try:
-        from stable_baselines3 import PPO  # type: ignore[import-not-found]
-        from stable_baselines3.common.vec_env import (  # type: ignore[import-not-found]
+        from stable_baselines3 import PPO
+        from stable_baselines3.common.vec_env import (
             DummyVecEnv,
         )
     except ImportError:
