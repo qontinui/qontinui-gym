@@ -3,7 +3,7 @@ name = "qontinui-gym"
 version = "0.1.0"
 description = "Gymnasium environments for visual GUI automation with Qontinui"
 authors = ["Joshua Spinak"]
-license = "MIT"
+license = "AGPL-3.0-or-later"
 readme = "README.md"
 homepage = "https://github.com/qontinui/qontinui-gym"
 repository = "https://github.com/qontinui/qontinui-gym"
@@ -12,7 +12,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
