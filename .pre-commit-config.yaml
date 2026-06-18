@@ -24,11 +24,3 @@ repos:
   #     - id: mypy
   #       args: ['--config-file=pyproject.toml', 'src/']
   #       pass_filenames: false
-
-  - repo: local
-    hooks:
-      - id: block-claude-attribution
-        name: Block Claude Attribution
-        entry: python .pre-commit-hooks/block_claude_attribution.py
-        language: system
-        stages: [commit-msg]
