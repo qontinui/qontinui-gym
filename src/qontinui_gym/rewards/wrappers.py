@@ -6,7 +6,7 @@ system with standard Gymnasium environments.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, SupportsFloat
+from typing import TYPE_CHECKING, Any, SupportsFloat, TypeAlias
 
 import gymnasium as gym
 from gymnasium import Wrapper
@@ -16,8 +16,13 @@ from qontinui_gym.rewards.base import ActionResult, StepInfo
 if TYPE_CHECKING:
     from qontinui_gym.rewards.composers import ComposedReward
 
+# Qontinui environments always expose dict observations and either a plain
+# workflow index or a hybrid action dict (see QontinuiEnv in env.py).
+_ObsType: TypeAlias = dict[str, Any]
+_ActType: TypeAlias = int | dict[str, Any]
 
-class QontinuiRewardWrapper(Wrapper):  # type: ignore[misc]
+
+class QontinuiRewardWrapper(Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Gymnasium wrapper that applies a qontinui-gym reward function.
 
     This wrapper intercepts the reward from the base environment
@@ -40,7 +45,7 @@ class QontinuiRewardWrapper(Wrapper):  # type: ignore[misc]
 
     def __init__(
         self,
-        env: gym.Env,
+        env: gym.Env[_ObsType, _ActType],
         reward_function: ComposedReward,
         add_original_reward: bool = True,
     ):
@@ -90,7 +95,7 @@ class QontinuiRewardWrapper(Wrapper):  # type: ignore[misc]
         *,
         seed: int | None = None,
         options: dict[str, Any] | None = None,
-    ) -> tuple[Any, dict[str, Any]]:
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Reset environment and reward function.
 
         Args:
@@ -157,14 +162,14 @@ class QontinuiRewardWrapper(Wrapper):  # type: ignore[misc]
         )
 
 
-class RewardScaleWrapper(Wrapper):  # type: ignore[misc]
+class RewardScaleWrapper(Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Simple wrapper to scale rewards by a constant factor.
 
     Example:
         env = RewardScaleWrapper(env, scale=0.01)
     """
 
-    def __init__(self, env: gym.Env, scale: float = 1.0):
+    def __init__(self, env: gym.Env[_ObsType, _ActType], scale: float = 1.0):
         """Initialize reward scale wrapper.
 
         Args:
@@ -181,7 +186,7 @@ class RewardScaleWrapper(Wrapper):  # type: ignore[misc]
         return obs, float(reward) * self.scale, terminated, truncated, info
 
 
-class RewardClipWrapper(Wrapper):  # type: ignore[misc]
+class RewardClipWrapper(Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Wrapper to clip rewards to a range.
 
     Example:
@@ -190,7 +195,7 @@ class RewardClipWrapper(Wrapper):  # type: ignore[misc]
 
     def __init__(
         self,
-        env: gym.Env,
+        env: gym.Env[_ObsType, _ActType],
         min_reward: float = -float("inf"),
         max_reward: float = float("inf"),
     ):

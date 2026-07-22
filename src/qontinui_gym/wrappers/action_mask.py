@@ -6,15 +6,20 @@ with algorithms that support action masking (like MaskablePPO).
 
 from __future__ import annotations
 
-from typing import Any, SupportsFloat
+from typing import Any, SupportsFloat, TypeAlias
 
 import gymnasium as gym
 import numpy as np
 import numpy.typing as npt
 from gymnasium import spaces
 
+# Qontinui environments always expose dict observations and either a plain
+# workflow index or a hybrid action dict (see QontinuiEnv in env.py).
+_ObsType: TypeAlias = dict[str, Any]
+_ActType: TypeAlias = int | dict[str, Any]
 
-class ActionMaskWrapper(gym.Wrapper):  # type: ignore[misc]
+
+class ActionMaskWrapper(gym.Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Mask invalid actions based on current state.
 
     Uses state machine transitions to determine which workflows
@@ -32,7 +37,7 @@ class ActionMaskWrapper(gym.Wrapper):  # type: ignore[misc]
 
     def __init__(
         self,
-        env: gym.Env,
+        env: gym.Env[_ObsType, _ActType],
         default_all_valid: bool = True,
     ):
         """Initialize action mask wrapper.
@@ -63,7 +68,7 @@ class ActionMaskWrapper(gym.Wrapper):  # type: ignore[misc]
         *,
         seed: int | None = None,
         options: dict[str, Any] | None = None,
-    ) -> tuple[Any, dict[str, Any]]:
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Reset and update action mask.
 
         Args:
@@ -133,7 +138,7 @@ class ActionMaskWrapper(gym.Wrapper):  # type: ignore[misc]
         return self._current_valid_actions
 
 
-class TerminateOnInvalidWrapper(gym.Wrapper):  # type: ignore[misc]
+class TerminateOnInvalidWrapper(gym.Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Terminate episode on invalid action.
 
     Useful for training agents to only take valid actions.
@@ -144,7 +149,7 @@ class TerminateOnInvalidWrapper(gym.Wrapper):  # type: ignore[misc]
 
     def __init__(
         self,
-        env: gym.Env,
+        env: gym.Env[_ObsType, _ActType],
         penalty: float = -1.0,
     ):
         """Initialize termination wrapper.

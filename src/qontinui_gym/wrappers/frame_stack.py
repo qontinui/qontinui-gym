@@ -7,15 +7,20 @@ information about recent visual changes.
 from __future__ import annotations
 
 from collections import deque
-from typing import Any, SupportsFloat
+from typing import Any, SupportsFloat, TypeAlias
 
 import gymnasium as gym
 import numpy as np
 import numpy.typing as npt
 from gymnasium import spaces
 
+# Qontinui environments always expose dict observations and either a plain
+# workflow index or a hybrid action dict (see QontinuiEnv in env.py).
+_ObsType: TypeAlias = dict[str, Any]
+_ActType: TypeAlias = int | dict[str, Any]
 
-class FrameStackWrapper(gym.Wrapper):  # type: ignore[misc]
+
+class FrameStackWrapper(gym.Wrapper[_ObsType, _ActType, _ObsType, _ActType]):
     """Stack multiple screenshot frames for temporal information.
 
     Useful for detecting animations, transitions, and temporal patterns.
@@ -28,7 +33,7 @@ class FrameStackWrapper(gym.Wrapper):  # type: ignore[misc]
         # observation["screenshot"] shape: (4, H, W, C)
     """
 
-    def __init__(self, env: gym.Env, num_frames: int = 4):
+    def __init__(self, env: gym.Env[_ObsType, _ActType], num_frames: int = 4):
         """Initialize frame stack wrapper.
 
         Args:
@@ -62,7 +67,7 @@ class FrameStackWrapper(gym.Wrapper):  # type: ignore[misc]
         *,
         seed: int | None = None,
         options: dict[str, Any] | None = None,
-    ) -> tuple[Any, dict[str, Any]]:
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Reset and initialize frame stack.
 
         Args:

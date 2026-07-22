@@ -13,7 +13,6 @@ from typing import Any
 import gymnasium as gym
 import numpy as np
 import numpy.typing as npt
-from gymnasium.core import RenderFrame
 
 from qontinui_gym.client.runner_client import RunnerClient
 from qontinui_gym.config.loader import QontinuiConfig, load_qontinui_config
@@ -33,7 +32,7 @@ from qontinui_gym.spaces.observation_space import (
 logger = logging.getLogger(__name__)
 
 
-class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):  # type: ignore[misc]
+class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):
     """Gymnasium environment for visual GUI automation with Qontinui.
 
     This environment connects to a running qontinui-runner instance
@@ -287,11 +286,19 @@ class QontinuiEnv(gym.Env[dict[str, Any], int | dict[str, Any]]):  # type: ignor
 
         return observation, reward, terminated, truncated, info
 
-    def render(self) -> RenderFrame | list[RenderFrame] | None:
+    def render(self) -> Any:
         """Render the current state.
 
         Returns:
             Screenshot as numpy array (for rgb_array mode) or None
+
+        Note:
+            gymnasium.core.Env.render() is typed with a bare, unbound
+            ``RenderFrame`` TypeVar that isn't tied to the class's
+            [ObsType, ActType] generics, so no concrete return type can
+            satisfy the override check (mypy [override]) here. ``Any``
+            mirrors gymnasium's own concrete envs, which leave render()
+            unannotated for the same reason.
         """
         if self.render_mode == "rgb_array":
             if self._last_screenshot is not None:

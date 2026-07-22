@@ -1,18 +1,72 @@
 name: qontinui CI
+
+# The workflow name is the check context coord's merge engine reads. Keep it
+# stable ("qontinui CI") — renaming it orphans the recorded CI baseline.
+
 on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Project standard for Python repos (see the monorepo CLAUDE.md). The
+  # bootstrap workflow this replaces used `python-version: '3.x'`, which the
+  # hosted runners now resolve to 3.14 — nothing in this dependency tree
+  # publishes 3.14 wheels yet, so pip fell back to building Pillow from source
+  # and died on missing libjpeg headers. Pin the interpreter, don't track latest.
+  PYTHON_VERSION: "3.12"
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      # Poetry must exist before setup-python so `cache: poetry` can resolve the
+      # lockfile. Pinned to the 2.x line: 3.x may change the lock format, which
+      # would silently invalidate poetry.lock.
+      - name: Install Poetry
+        run: pipx install "poetry>=2.0,<3.0"
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: poetry
+
+      # Fails if pyproject.toml and poetry.lock have drifted. This repo shipped
+      # an invalid pyproject (extras naming dependencies that were never
+      # declared) alongside a stale lock, and nothing validated either. Run this
+      # before install so a drift failure names its real cause.
+      - name: Validate pyproject + lockfile
+        run: poetry check --lock
+
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          if [ -f pyproject.toml ]; then pip install -e . || pip install .; fi
-          pip install pytest
+        run: poetry install --with dev --all-extras
+
       - name: Test
-        run: pytest
+        run: poetry run pytest
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install Poetry
+        run: pipx install "poetry>=2.0,<3.0"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: poetry
+
+      - name: Install dependencies
+        run: poetry install --with dev --all-extras
+
+      - name: Ruff
+        run: poetry run ruff check .
+
+      # pyproject sets `[tool.mypy] strict = true`. Without a gate that setting
+      # was aspirational, and 23 errors had accumulated behind it.
+      - name: Mypy
+        run: poetry run mypy src

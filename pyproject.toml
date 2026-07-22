@@ -26,8 +26,19 @@ python = "^3.10"
 gymnasium = "^1.0.0"
 numpy = ">=1.26,<3.0"
 requests = "^2.31"
-pillow = "^10.0"
+# Pillow 10.x publishes no wheels for CPython >= 3.13, so a `^10.0` pin forces
+# a from-source build on any modern interpreter and fails on missing libjpeg
+# headers. Allow the 11/12 series, which ship wheels for the whole 3.10-3.14
+# range this package claims to support.
+pillow = ">=10.4,<13.0"
 networkx = "^3.0"
+
+# Optional dependencies backing the extras below. Poetry requires every extra
+# member to be declared here with `optional = true`; without these declarations
+# `poetry check` and `poetry install` both fail with
+# `Cannot find dependency "..." for extra "..." in main dependencies`.
+opencv-python-headless = { version = "^4.10", optional = true }
+stable-baselines3 = { version = "^2.4", optional = true }
 
 [tool.poetry.extras]
 vision = ["opencv-python-headless"]
