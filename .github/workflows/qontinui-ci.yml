@@ -24,9 +24,11 @@ name: qontinui CI
 # competing for the same hosted-runner pool, and the PR pinned at
 # mergeStateStatus=UNSTABLE until the slower duplicate drained. A `concurrency:`
 # block does NOT fix it: `github.ref` differs by event (`refs/heads/<branch>` vs
-# `refs/pull/<n>/merge`) so the two runs land in different groups - measured,
-# qontinui-docs and qontinui-gym carry `cancel-in-progress: true` and still emit
-# both runs at one SHA. Plan:
+# `refs/pull/<n>/merge`) so the two runs land in different groups - measured on
+# qontinui-docs and this repo, which BOTH carried `cancel-in-progress: true` when
+# that measurement was taken and still emitted both runs at one SHA. Stated in
+# the past tense deliberately: it is a record of the evidence, not a claim about
+# what those files carry today (both have since taken the guard below). Plan:
 # 2026-08-31-devops-unfiltered-push-trigger-duplicates-every-pr-ci-run.
 #
 # `pull_request:` is deliberately left UNFILTERED so stacked PRs based on a
@@ -40,9 +42,70 @@ on:
       - 'merge-candidate-batch/**'
   pull_request:
 
+# CANCEL ONLY THE PR LANE. `cancel-in-progress` must NOT be a bare `true` here.
+# Scoping the `push:` trigger above left `main` and `merge-candidate*` as the
+# ONLY branches a push run can fire on, so blanket cancellation no longer sheds
+# redundant work - it sheds runs on the two ref classes coord's merge engine
+# reads. This repo is a live train repo: `merge-candidate/*` and
+# `merge-candidate-spec/*` pushes are in its own run history.
+#
+#   - `merge-candidate*`. coord's stated convention for candidate refs is
+#     `cancel-in-progress: false`, verbatim in the candidate-CI workflow it holds
+#     as the shape every train repo should carry (`ci_baseline.rs`
+#     COORD_CANDIDATE_CI_WORKFLOW_YAML): "a candidate re-push mid-run is rare and
+#     a duplicate run is cheaper than a half-reported check set". The train mints
+#     `merge-candidate/<proposal_id>` from the proposal id and a requeue re-pushes
+#     the SAME ref (`merge_scheduler.rs` `revert_claim_to_queued` /
+#     `on_base_mismatch`), so the group DOES collide across attempts. The verdict
+#     is head_sha scoped, so a cancelled older run is not misread as the new
+#     attempt's answer - the cost is the wasted run and the requeue churn.
+#   - `main`. The group resolves to `qontinui CI-refs/heads/main`, exactly the
+#     group a prospective land's `(push, refs/heads/main)` event resolves into, so
+#     every in-flight main run is `reaper_at_risk` by `ci_observer.rs`
+#     `run_is_reaper_at_risk`. coord already models the reap that happens even at
+#     `false` (GitHub reaps the oldest PENDING run in a group); `true` upgrades
+#     that from "queued behind" to an actual cancellation, leaving a `cancelled`
+#     conclusion on a main SHA whose baseline coord reads as non-success.
+#     `qontinui CI` is not on `BENIGN_SUPERSESSION_WORKFLOWS`, so nothing
+#     downgrades it.
+#
+#     The window is small but real, not theoretical: main runs here take 91-118 s
+#     (runs 33365463352, 29929312191, 29927602314) and the train lands
+#     back-to-back with COORD_MERGE_SLOTS=3 - on 2026-07-22 it pushed main at
+#     14:14:12Z with candidate runs still in flight seconds either side.
+#
+# Be honest about the size of it: every tree the train lands has already been
+# built green before it lands, so the verdict a cancel destroys here is usually a
+# redundant one. What makes it worth closing is that it is destroyed SILENTLY -
+# `ci_baseline.rs` `ingest_workflow_run` returns before the write when
+# `is_supersession_conclusion` matches (`cancelled` | `stale`), so the baseline
+# quietly keeps its last conclusive verdict. That guard is a downstream
+# compensation living in one consumer; the invariant belongs at the producer,
+# which is this file.
+#
+# `pull_request` is the one lane where cancelling is safe: coord excludes PR-lane
+# runs from the no-reap blocking set (`ci_observer.rs` `is_excluded_from_blocking`
+# - "a main push neither cancels nor invalidates a PR run") and reads PR checks
+# through `coord.pr_check_runs_latest`, partitioned by `(repo, head_sha, name)`,
+# so the superseded attempt sits in a different partition and is never consulted
+# for the new head. The saving is modest on a ~2-minute Python job - this change
+# is made for the hazard above, not for the runner minutes.
+#
+# THE GROUP'S PRECONDITION. `cancel-in-progress` keys on the EVENT; the group
+# keys only on the REF. That is sufficient only because no two triggers here can
+# put different event kinds on one ref (`push` -> `refs/heads/<branch>`,
+# `pull_request` -> `refs/pull/<n>/merge`). Add a `workflow_dispatch:` trigger and
+# it stops holding - a dispatch on `main` joins `qontinui CI-refs/heads/main`. If
+# you add one, key the GROUP by `github.event_name` too, as
+# `qontinui-coord/.github/workflows/ci.yml` does.
+#
+# Note for anyone reading coord's cached view of this file: `parse_concurrency`
+# matches only the literals `true`/`True`/`yes`, so it records this expression as
+# `cancel_in_progress: false`. That field is observability only - no gate reads
+# it, and `run_is_reaper_at_risk` keys on the GROUP alone.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   # Project standard for Python repos (see the monorepo CLAUDE.md). The
